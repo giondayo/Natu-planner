@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#141d18">
+  <title>Natural High 2026 · My Festival Planner</title>
+  <meta name="description" content="Personal schedule planner for Natural High Healing Festival 2026">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+/* Natural High 2026 planner — midsummer dusk theme */
+:root {
+  --night: #141d18;        /* deep pine night */
+  --night-2: #1c2822;
+  --card: #22302a;
+  --card-edge: #2e4037;
+  --ink: #eef3ee;
+  --ink-dim: #a9bbae;
+  --gold: #e9b44c;         /* candlelight */
+  --gold-soft: rgba(233,180,76,.14);
+  --rose: #e8a1b0;
+  --radius: 14px;
+  --cat: #7fb069;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(1200px 500px at 50% -180px, #2a3d33 0%, transparent 60%),
+    var(--night);
+  color: var(--ink);
+  font-family: "Karla", system-ui, sans-serif;
+  line-height: 1.45;
+  padding-bottom: 48px;
+}
+a { color: var(--gold); }
+
+/* ---------- header ---------- */
+.top {
+  position: sticky; top: 0; z-index: 20;
+  background: linear-gradient(180deg, rgba(20,29,24,.97) 70%, rgba(20,29,24,.86));
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--card-edge);
+  padding: 14px 16px 0;
+}
+.brand h1 {
+  font-family: "Fraunces", serif;
+  font-weight: 700; font-size: 1.45rem; margin: 0; letter-spacing: .01em;
+}
+.brand h1 span { color: var(--gold); font-weight: 400; }
+.tagline {
+  margin: 2px 0 10px; color: var(--ink-dim);
+  font-size: .74rem; letter-spacing: .22em; text-transform: uppercase;
+}
+.days { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; }
+.day-tab {
+  flex: 1 0 auto; border: 1px solid var(--card-edge); background: transparent;
+  color: var(--ink-dim); font: 500 .9rem "Karla", sans-serif;
+  padding: 8px 14px; border-radius: 999px; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.day-tab[aria-selected="true"] {
+  background: var(--gold); border-color: var(--gold); color: #241a06; font-weight: 700;
+}
+
+/* ---------- toolbar & filters ---------- */
+.toolbar { padding: 12px 16px 0; }
+.toolbar-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.chip {
+  border: 1px solid var(--card-edge); background: var(--night-2); color: var(--ink);
+  font: 500 .84rem "Karla", sans-serif; padding: 7px 12px; border-radius: 999px;
+  cursor: pointer; transition: background .15s, border-color .15s;
+}
+.chip .count { color: var(--gold); font-weight: 700; }
+.chip[aria-pressed="true"], .chip.on {
+  background: var(--gold-soft); border-color: var(--gold); color: var(--gold);
+}
+.chip-plan[aria-pressed="true"] { background: var(--gold); color: #241a06; }
+.chip-plan[aria-pressed="true"] .count { color: #241a06; }
+.chip-ghost { background: transparent; color: var(--ink-dim); }
+.filter-panel {
+  margin-top: 10px; padding: 12px; border: 1px solid var(--card-edge);
+  border-radius: var(--radius); background: var(--night-2);
+}
+.filter-label {
+  margin: 10px 0 6px; font-size: .7rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--ink-dim);
+}
+.filter-label:first-child { margin-top: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips .chip { padding: 5px 10px; font-size: .8rem; }
+.chips .chip.cat.on { color: var(--ink); border-color: var(--c); background: color-mix(in srgb, var(--c) 22%, transparent); }
+.chips .chip .dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--c); margin-right: 5px; vertical-align: 1px;
+}
+
+/* ---------- schedule ---------- */
+.schedule { padding: 8px 16px 24px; max-width: 720px; margin: 0 auto; }
+.time-group { margin-top: 18px; }
+.time-head {
+  font-family: "Fraunces", serif; font-size: 1.05rem; color: var(--gold);
+  margin: 0 0 8px; display: flex; align-items: center; gap: 10px;
+}
+.time-head::after { content: ""; flex: 1; height: 1px; background: var(--card-edge); }
+.card {
+  position: relative; width: 100%; text-align: left;
+  background: var(--card); border: 1px solid var(--card-edge);
+  border-radius: var(--radius); padding: 12px 14px 12px 18px; margin-bottom: 8px;
+  color: var(--ink); cursor: pointer; font-family: inherit;
+  transition: transform .12s, border-color .15s, box-shadow .2s;
+}
+.card::before {          /* category aura stripe */
+  content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 4px;
+  border-radius: 4px; background: var(--cat);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--cat) 60%, transparent);
+}
+.card:active { transform: scale(.985); }
+.card.attending {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold), 0 0 22px rgba(233,180,76,.22);
+  background: linear-gradient(180deg, rgba(233,180,76,.10), rgba(233,180,76,.03)), var(--card);
+}
+.card-row { display: flex; align-items: baseline; gap: 8px; }
+.card-time { font-size: .8rem; color: var(--ink-dim); white-space: nowrap; }
+.card-title { font-weight: 700; font-size: .98rem; flex: 1; }
+.card.attending .card-title { color: var(--gold); }
+.card-meta { margin-top: 2px; font-size: .82rem; color: var(--ink-dim); }
+.card-star {
+  position: absolute; right: 10px; top: 8px; font-size: 1.1rem; line-height: 1;
+  color: var(--card-edge);
+}
+.card.attending .card-star { color: var(--gold); text-shadow: 0 0 10px rgba(233,180,76,.7); }
+.badges { display: inline-flex; gap: 4px; margin-left: 6px; vertical-align: 1px; }
+.badge {
+  font-size: .62rem; font-weight: 700; padding: 1px 5px; border-radius: 5px;
+  background: var(--night-2); border: 1px solid var(--card-edge); color: var(--rose);
+}
+.empty { text-align: center; color: var(--ink-dim); padding: 48px 16px; }
+.empty strong { color: var(--ink); font-family: "Fraunces", serif; }
+
+/* ---------- detail sheet ---------- */
+.overlay[hidden] { display: none; }
+.overlay {
+  position: fixed; inset: 0; z-index: 50; background: rgba(8,12,10,.65);
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: fade .18s ease;
+}
+.sheet {
+  position: relative; width: 100%; max-width: 640px; max-height: 86vh;
+  overflow-y: auto; background: var(--night-2);
+  border: 1px solid var(--card-edge); border-bottom: none;
+  border-radius: 20px 20px 0 0; padding: 22px 20px 32px;
+  animation: rise .22s ease;
+}
+@keyframes rise { from { transform: translateY(24px); opacity: .6; } }
+@keyframes fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .sheet, .overlay { animation: none; } }
+.sheet-close {
+  position: absolute; right: 14px; top: 14px; border: none; background: var(--card);
+  color: var(--ink-dim); width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; font-size: .9rem;
+}
+.sheet h2 {
+  font-family: "Fraunces", serif; font-size: 1.4rem; margin: 4px 40px 4px 0; line-height: 1.2;
+}
+.sheet .teacher { color: var(--rose); font-weight: 500; margin: 0 0 14px; }
+.sheet .cat-pill {
+  display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--cat) 22%, transparent);
+  border: 1px solid var(--cat); color: var(--ink); margin-bottom: 10px;
+}
+.facts { margin: 0 0 14px; padding: 0; list-style: none; }
+.facts li {
+  display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--card-edge);
+  font-size: .92rem;
+}
+.facts .k { width: 84px; flex-shrink: 0; color: var(--ink-dim); font-size: .78rem;
+  text-transform: uppercase; letter-spacing: .1em; padding-top: 2px; }
+.facts .tbc { color: var(--ink-dim); font-style: italic; }
+.label-list { margin: 0 0 16px; padding: 0; list-style: none; font-size: .84rem; color: var(--ink-dim); }
+.label-list li { padding: 2px 0; }
+.label-list b { color: var(--rose); }
+.attend-btn {
+  width: 100%; padding: 14px; border-radius: var(--radius); border: 1px solid var(--gold);
+  background: transparent; color: var(--gold); font: 700 1rem "Karla", sans-serif;
+  cursor: pointer; transition: background .15s, color .15s;
+}
+.attend-btn.on { background: var(--gold); color: #241a06; }
+.artist-link { display: block; text-align: center; margin-top: 12px; font-size: .88rem; }
+
+/* ---------- footer ---------- */
+.foot { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+.foot p { font-size: .74rem; color: var(--ink-dim); }
+
+@media (min-width: 600px) {
+  .brand h1 { font-size: 1.7rem; }
+  .card-title { font-size: 1.05rem; }
+}
+:where(button, a):focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- v2: view switch, tappable stars, grid view, descriptions ---------- */
+.view-switch { display: inline-flex; border-radius: 999px; overflow: hidden; border: 1px solid var(--card-edge); }
+.view-switch .chip { border: none; border-radius: 0; background: var(--night-2); }
+.view-switch .chip[aria-pressed="true"] { background: var(--gold); color: #241a06; font-weight: 700; }
+
+.star-btn {
+  position: absolute; right: 2px; top: 2px; z-index: 2;
+  width: 34px; height: 34px; border: none; background: transparent;
+  color: var(--card-edge); font-size: 1.15rem; line-height: 1; cursor: pointer;
+  transition: color .15s, transform .1s;
+}
+.star-btn:active { transform: scale(1.25); }
+.star-btn.on { color: var(--gold); text-shadow: 0 0 10px rgba(233,180,76,.7); }
+.card { cursor: pointer; }
+.card .card-title { padding-right: 26px; }
+
+/* grid view */
+.schedule.grid { padding: 8px 0 24px; max-width: none; }
+.grid-scroll {
+  overflow: auto; max-height: calc(100vh - 220px); min-height: 320px;
+  -webkit-overflow-scrolling: touch; border-top: 1px solid var(--card-edge);
+}
+.grid-inner { position: relative; }
+.g-head {
+  position: sticky; top: 0; z-index: 6; display: flex;
+  background: var(--night); border-bottom: 1px solid var(--card-edge); height: 54px;
+}
+.g-corner { position: sticky; left: 0; z-index: 7; background: var(--night); flex-shrink: 0; }
+.g-venue {
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 4px 8px;
+  font-family: "Fraunces", serif; font-size: .82rem; color: var(--gold);
+  border-left: 1px solid var(--card-edge);
+}
+.g-venue.tbc { color: var(--ink-dim); font-style: italic; }
+.g-rail { position: sticky; left: 0; z-index: 5; background: var(--night); border-right: 1px solid var(--card-edge); }
+.g-time {
+  position: absolute; left: 0; right: 4px; text-align: right;
+  font-size: .68rem; color: var(--ink-dim); transform: translateY(-1px);
+}
+.g-line { position: absolute; left: 0; height: 1px; background: rgba(46,64,55,.55); z-index: 0; }
+.g-event {
+  position: absolute; z-index: 1; overflow: hidden; cursor: pointer;
+  background: var(--card); border: 1px solid var(--card-edge); border-left: 4px solid var(--cat);
+  border-radius: 8px; padding: 4px 6px 4px 7px; font-size: .72rem; line-height: 1.25;
+}
+.g-event .g-ev-time { display: block; color: var(--ink-dim); font-size: .64rem; padding-right: 22px; }
+.g-event .g-ev-title { font-weight: 700; display: block; padding-right: 4px; }
+.g-event .star-btn { width: 26px; height: 26px; font-size: .95rem; right: 0; top: 0; }
+.g-event.attending {
+  border-color: var(--gold); border-left-color: var(--gold);
+  background: linear-gradient(180deg, rgba(233,180,76,.16), rgba(233,180,76,.05)), var(--card);
+  box-shadow: 0 0 12px rgba(233,180,76,.25); z-index: 2;
+}
+.g-event.attending .g-ev-title { color: var(--gold); }
+
+/* description in sheet */
+.desc { margin: 4px 0 16px; padding: 12px 14px; background: var(--card); border: 1px solid var(--card-edge); border-radius: var(--radius); font-size: .92rem; }
+.desc h3 { font-family: "Fraunces", serif; font-size: 1rem; color: var(--gold); margin: 10px 0 4px; }
+.desc h3:first-child { margin-top: 0; }
+.desc p { margin: 6px 0; }
+.desc-loading { color: var(--ink-dim); font-style: italic; }
+
+</style>
+</head>
+<body>
+
+  <header class="top">
+    <div class="brand">
+      <h1>Natural High <span>2026</span></h1>
+      <p class="tagline">Soulful · Beloved · Wildly Alive</p>
+    </div>
+    <nav class="days" id="dayTabs" aria-label="Festival days"></nav>
+  </header>
+
+  <section class="toolbar">
+    <div class="toolbar-row">
+      <div class="view-switch" role="group" aria-label="View">
+        <button id="viewGrid" class="chip" aria-pressed="false">Grid</button>
+        <button id="viewList" class="chip" aria-pressed="false">List</button>
+      </div>
+      <button id="planToggle" class="chip chip-plan" aria-pressed="false">★ My plan <span id="planCount" class="count"></span></button>
+      <button id="filterToggle" class="chip" aria-expanded="false">Filters <span id="filterCount" class="count"></span></button>
+      <button id="clearFilters" class="chip chip-ghost" hidden>Clear</button>
+    </div>
+    <div id="filterPanel" class="filter-panel" hidden>
+      <p class="filter-label">Category</p>
+      <div class="chips" id="catChips"></div>
+      <p class="filter-label">Labels</p>
+      <div class="chips" id="labelChips"></div>
+      <p class="filter-label">Language</p>
+      <div class="chips" id="langChips"></div>
+    </div>
+  </section>
+
+  <main id="schedule" class="schedule" aria-live="polite"></main>
+
+  <footer class="foot">
+    <p>Unofficial planner · data from
+      <a href="https://naturalhighfestival.fi/ohjelma/" target="_blank" rel="noopener">naturalhighfestival.fi</a>.
+      Always double-check times &amp; venues in the
+      <a href="https://www.naturalhighfestival.com/wp-content/uploads/2026/06/Natu_2026_OHJELMA.pdf" target="_blank" rel="noopener">official program</a>.
+      Your plan is saved on this device only.</p>
+  </footer>
+
+  <!-- Workshop detail sheet -->
+  <div id="overlay" class="overlay" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <button class="sheet-close" id="sheetClose" aria-label="Close">✕</button>
+      <div id="sheetBody"></div>
+    </div>
+  </div>
+
+  <script>
+// ============================================================
+// Natural High Healing Festival 2026 – schedule data
+// Source: naturalhighfestival.fi (program PDF + artist pages)
+// Edit freely: each event is one object in EVENTS.
+// venue: null  = venue not confirmed from the PDF grid –
+//                check the official program and fill it in.
+// labels: Y = yoga mat, S = strong, K = kids friendly,
+//         N = nudity, B = not for beginners, K18 = adults only
+// ============================================================
+
+const DAYS = [
+  { id: "thu", name: "Thursday" },
+  { id: "fri", name: "Friday" },
+  { id: "sat", name: "Saturday" },
+  { id: "sun", name: "Sunday" },
+];
+
+const CATEGORIES = {
+  yoga:      { name: "Yoga",                         color: "#7fb069" },
+  tantra:    { name: "Tantra & Conscious Sexuality", color: "#d94f6b" },
+  dance:     { name: "Dance & Body",                 color: "#e8843c" },
+  sound:     { name: "Sound & Voice",                color: "#4ea5d9" },
+  ceremony:  { name: "Ceremony & Performance",       color: "#9b6bce" },
+  lecture:   { name: "Lecture",                      color: "#c9a227" },
+  coaching:  { name: "Coaching",                     color: "#3aa79b" },
+  meditation:{ name: "Meditation",                   color: "#7a86d6" },
+  other:     { name: "Other Inspirations",           color: "#b0805e" },
+  music:     { name: "Music",                        color: "#e05c9a" },
+  dj:        { name: "DJ & Party",                   color: "#f2b04c" },
+  ecstatic:  { name: "Ecstatic Dance",               color: "#e0653c" },
+  kids:      { name: "Kids & Teens",                 color: "#6fc2e0" },
+  special:   { name: "Festival Program",             color: "#cfa3ff" },
+};
+
+const VENUES = [
+  "Wildly Alive Main Stage", "Hall of Transformation", "Red Temple",
+  "Mystic Soul", "White Light Room", "Heart Space", "Art Cave",
+  "Share & Play", "Wisdom Temple", "Flow of Life", "Divine Vision",
+  "Beach Party Vibes", "Tiipii", "Teen Lounge",
+  "Sandy Beach Sauna", "Healers Oasis", "Football Field",
+];
+
+const LABELS = {
+  Y:   "Bring a yoga mat or something to lay on",
+  S:   "Strong – may trigger intense emotional release",
+  K:   "Kids friendly",
+  N:   "May contain nudity",
+  B:   "Not for beginners (neo-tantra)",
+  K18: "Adults only (18+)",
+};
+
+// Artist page links on naturalhighfestival.fi
+const ARTIST_URLS = {
+  "Alexis Alcalá": "https://naturalhighfestival.fi/alexis-alcala/",
+  "Alma Solina": "https://naturalhighfestival.fi/alma-solina-2/",
+  "Amanda & Eevi": "https://naturalhighfestival.fi/amanda-eevi/",
+  "Andy Buru": "https://naturalhighfestival.fi/andy-buru/",
+  "Anja Kadziolka": "https://naturalhighfestival.fi/anja-kadziolka-3/",
+  "Anja Kadziolka & Hilda Kunnola": "https://naturalhighfestival.fi/anja-kadziolka-hilda-kunnola/",
+  "Anna Lindfors": "https://naturalhighfestival.fi/anna-lindfors/",
+  "Annina Reet": "https://naturalhighfestival.fi/annina-reet/",
+  "Annu Violin": "https://naturalhighfestival.fi/annu-violin/",
+  "Antti Launonen": "https://naturalhighfestival.fi/antti-launonen-3/",
+  "Antti Virolainen": "https://naturalhighfestival.fi/antti-virolainen/",
+  "Anu Diosa": "https://naturalhighfestival.fi/anu-diosa/",
+  "Anu Karoliina": "https://naturalhighfestival.fi/anu-karoliina/",
+  "Ari Marjamäki": "https://naturalhighfestival.fi/ari-marjamaki-2/",
+  "Arunji": "https://naturalhighfestival.fi/arunji/",
+  "Asko Kallonen": "https://naturalhighfestival.fi/asko-kallonen/",
+  "Ameeba": "https://naturalhighfestival.fi/ameeba/",
+  "CosmosKamut": "https://naturalhighfestival.fi/cosmoskamut/",
+  "Deepthi / Kirsi Ranto": "https://naturalhighfestival.fi/deepthi-kirsi-ranto/",
+  "DJ OlliS": "https://naturalhighfestival.fi/dj-ollis-3/",
+  "DJ Toby One": "https://naturalhighfestival.fi/dj-toby-one-2/",
+  "Ehea": "https://naturalhighfestival.fi/ehea/",
+  "Elina Lovesta": "https://naturalhighfestival.fi/elina-lovesta/",
+  "Elina Mikkola & Rubén Nagore": "https://naturalhighfestival.fi/elina-mikkola-ruben-nagore-3/",
+  "Emmi Jansson": "https://naturalhighfestival.fi/emmi-jansson-2/",
+  "Emmi Nurmilaakso": "https://naturalhighfestival.fi/emmi-nurmilaakso-2/",
+  "George Joy": "https://naturalhighfestival.fi/george-joy/",
+  "Gloria Salo & Sarah Palu": "https://naturalhighfestival.fi/gloria-salo-sarah-palu/",
+  "Gloria Salo & Thomas Orboe": "https://naturalhighfestival.fi/gloria-salo-thomas-orboe/",
+  "Hale Heikkilä": "https://naturalhighfestival.fi/hale-heikkila/",
+  "Hale Heikkilä & Tobias Lundgren": "https://naturalhighfestival.fi/hale-heikkila-tobias-lundgren/",
+  "Hanna & DJ Blissbringer": "https://naturalhighfestival.fi/hanna-dj-blissbringer/",
+  "Hanna Baumgartner": "https://naturalhighfestival.fi/hanna-baumgartner-2/",
+  "Harri-Pekka Pietikäinen": "https://naturalhighfestival.fi/harri-pekka-pietikainen-2/",
+  "Helena Karhu": "https://naturalhighfestival.fi/helena-karhu/",
+  "Henna Länsipää": "https://naturalhighfestival.fi/henna-lansipaa-3/",
+  "Henna Perkkiö": "https://naturalhighfestival.fi/henna-perkkio/",
+  "Highway to Bliss": "https://naturalhighfestival.fi/highway-to-bliss-3/",
+  "Hilda & Koné": "https://naturalhighfestival.fi/hilda-kone/",
+  "Hilda & VIKA": "https://naturalhighfestival.fi/hilda-vika/",
+  "Iina Parviainen": "https://naturalhighfestival.fi/iina-parviainen/",
+  "Ihmeidentekijä": "https://naturalhighfestival.fi/ihmeidentekija/",
+  "Ilkka Koppelomäki": "https://naturalhighfestival.fi/ilkka-koppelomaki-2/",
+  "Irina Energy": "https://naturalhighfestival.fi/irina-energy/",
+  "Jani Kasanen": "https://naturalhighfestival.fi/jani-kasanen/",
+  "Janet Attwood": "https://naturalhighfestival.fi/janet-attwood/",
+  "Janne Passiniemi": "https://naturalhighfestival.fi/janne-passiniemi-2/",
+  "Jarno Mäkelä": "https://naturalhighfestival.fi/jarno-makela-2/",
+  "Jenni Kallio": "https://naturalhighfestival.fi/jenni-kallio/",
+  "Jonna Monola": "https://naturalhighfestival.fi/jonna-monola-2/",
+  "Jukka Nisula": "https://naturalhighfestival.fi/jukka-nisula/",
+  "Jutta Toivonen": "https://naturalhighfestival.fi/jutta-toivonen/",
+  "Kaisa Kärkkäinen": "https://naturalhighfestival.fi/kaisa-karkkainen/",
+  "Kareem Raïhani": "https://naturalhighfestival.fi/kareem-raihani/",
+  "Katariina Souri": "https://naturalhighfestival.fi/katariina-souri/",
+  "Ken Honda": "https://naturalhighfestival.fi/ken-honda/",
+  "Kimmo Nurminen": "https://naturalhighfestival.fi/kimmo-nurminen-siddhaaija/",
+  "Kirsti Kuosmanen": "https://naturalhighfestival.fi/kirsti-kuosmanen-3/",
+  "Koné Motion": "https://naturalhighfestival.fi/kone-motion/",
+  "Korento": "https://naturalhighfestival.fi/korento/",
+  "Laura Freya": "https://naturalhighfestival.fi/laura-freya/",
+  "Leena & Liisa": "https://naturalhighfestival.fi/leena-liisa/",
+  "Lulu & Mischka": "https://naturalhighfestival.fi/lulu-mischka/",
+  "Maitri & Simo": "https://naturalhighfestival.fi/maitri-simo/",
+  "Mari Rasimus": "https://naturalhighfestival.fi/mari-rasimus-2/",
+  "Maria Rosa Passiniemi": "https://naturalhighfestival.fi/maria-rosa-passiniemi/",
+  "Maria Rosa & Janne Passiniemi": "https://naturalhighfestival.fi/maria-rosa-janne-passiniemi/",
+  "Marko Seppälä": "https://naturalhighfestival.fi/marko-seppala/",
+  "Matti Pääaho": "https://naturalhighfestival.fi/matti-paaaho/",
+  "Merja Kallunki": "https://naturalhighfestival.fi/merja-kallunki-2/",
+  "Mia Jokiniva": "https://naturalhighfestival.fi/mia-jokiniva/",
+  "Miiska Van Renterghem": "https://naturalhighfestival.fi/miiska-van-renterghem-3/",
+  "Miki Sohlberg": "https://naturalhighfestival.fi/miki-sohlberg/",
+  "Miki Sohlberg & Thomas Orboe": "https://naturalhighfestival.fi/miki-thomas/",
+  "Mikko Harju": "https://naturalhighfestival.fi/mikko-harju/",
+  "Misha Sramova": "https://naturalhighfestival.fi/misha-sramova/",
+  "Monse Villarroel": "https://naturalhighfestival.fi/monse-villarroel/",
+  "Munezero": "https://naturalhighfestival.fi/munezero/",
+  "Musse Mammadov": "https://naturalhighfestival.fi/musse-mammadov-2/",
+  "Nadine Bose": "https://naturalhighfestival.fi/nadine-bose/",
+  "Nicholas Policarpio": "https://naturalhighfestival.fi/nicholas-policarpio/",
+  "Nicole Betita": "https://naturalhighfestival.fi/nicole-betita-2/",
+  "Olli Sovijärvi": "https://naturalhighfestival.fi/dj-ollis-3/",
+  "Paul Izak": "https://naturalhighfestival.fi/paul-izak/",
+  "Pekka J. Mattila": "https://naturalhighfestival.fi/pekka-j-mattila/",
+  "Petra Kaya & Kian Sanai": "https://naturalhighfestival.fi/petra-kaya-kian-sanai/",
+  "Pragita & Sudeva": "https://naturalhighfestival.fi/pragita-sudeva/",
+  "Päivi Kaskimäki": "https://naturalhighfestival.fi/paivi-kaskimaki-2/",
+  "Päivi Kaskimäki & Ville Juurikkala": "https://naturalhighfestival.fi/paivi-kaskimaki-ville-juurikkala/",
+  "Roland Tokko": "https://naturalhighfestival.fi/roland-tokko/",
+  "Ronja Alatalo": "https://naturalhighfestival.fi/ronja-alatalo/",
+  "Ronja Alatalo & Eeva Rajakangas": "https://naturalhighfestival.fi/ronja-alatalo-eeva-rajakangas/",
+  "Rytis Luko": "https://naturalhighfestival.fi/rytis-luko/",
+  "Sai": "https://naturalhighfestival.fi/sai-2/",
+  "Shaft Uddin": "https://naturalhighfestival.fi/shaft-uddin-3/",
+  "Silja Kulo": "https://naturalhighfestival.fi/silja-kulo-2/",
+  "Silja Kulo & Valhalla Deva": "https://naturalhighfestival.fi/silja-kulo-valhalla-deva/",
+  "Silja Kulo, Valhalla Deva & Iiro Kontio": "https://naturalhighfestival.fi/silja-kulo-valhalla-deva-iiro-kontio/",
+  "Siri Vedya": "https://naturalhighfestival.fi/siri-vedya/",
+  "Siri Vedya & Ari Marjamäki": "https://naturalhighfestival.fi/siri-vedya-ari-marjamaki/",
+  "Sonja Saagaia": "https://naturalhighfestival.fi/sonja-saagaia-3/",
+  "Taavi Kassila": "https://naturalhighfestival.fi/taavi-kassila/",
+  "Tero Suhonen": "https://naturalhighfestival.fi/tero-suhonen-2/",
+  "Thomas Orboe": "https://naturalhighfestival.fi/thomas-orboe/",
+  "TikTek": "https://naturalhighfestival.fi/tiktek/",
+  "Tobias Lundgren": "https://naturalhighfestival.fi/tobias-lundgren/",
+  "Tomi Kokko": "https://naturalhighfestival.fi/tomi-kokko-3/",
+  "Tomi Kokko & Sai": "https://naturalhighfestival.fi/tomi-kokko-sai/",
+  "Ukko Kärkkäinen": "https://naturalhighfestival.fi/ukko-karkkainen-2/",
+  "Viivi Svala": "https://naturalhighfestival.fi/viivi-svala/",
+  "Ville Juurikkala": "https://naturalhighfestival.fi/ville-juurikkala-3/",
+  "Virpi Raipala-Cormier": "https://naturalhighfestival.fi/virpi-raipala-cormier-3/",
+};
+
+// e(id, day, start, end, title, teacher, lang, cat, venue, labels)
+function e(id, day, start, end, title, teacher, lang, cat, venue, labels) {
+  return { id, day, start, end, title, teacher: teacher || "", lang: lang || "",
+           cat, venue: venue || null, labels: labels || [] };
+}
+
+const EVENTS = [
+  // ---------------- THURSDAY ----------------
+  e("t01","thu","18:30","19:30","Opening Ceremony – Year of the Soul","", "FIN/ENG","special","Wildly Alive Main Stage"),
+  e("t02","thu","19:30","20:00","Energizing Violin Show","Annu Violin","","music","Wildly Alive Main Stage"),
+  e("t03","thu","21:00","22:30","Music From Within","Hale Heikkilä & Tobias Lundgren","","music","Wildly Alive Main Stage"),
+  e("t04","thu","23:30","01:15","TikTek Live","TikTek","","ecstatic","Wildly Alive Main Stage"),
+  e("t05","thu","14:30","16:00","Speedfriending","CosmosKamut","FIN/ENG","other","Share & Play"),
+  e("t06","thu","14:00","15:45","Holosomatic® Experience","Alexis Alcalá","ENG","other","Hall of Transformation",["Y"]),
+  e("t07","thu","16:15","18:00","The Passion Test","Janet Attwood","ENG","lecture","Hall of Transformation"),
+  e("t08","thu","20:00","22:00","Blisstatic Warm-Up Dance Party","Hanna & DJ Blissbringer","","ecstatic","Hall of Transformation"),
+  e("t09","thu","23:00","00:15","UNI – Tea Ceremony, Handpan & Harp Music","Hilda & Koné","","music","Hall of Transformation"),
+  e("t10","thu","14:15","16:00","Häpeästä hyväksymiseen","Janne Passiniemi","FIN","tantra","Red Temple",["K18"]),
+  e("t11","thu","16:30","18:15","Elossa kehossa","Alma Solina","FIN","dance","Red Temple",["Y"]),
+  e("t12","thu","19:45","20:45","Twerk Rave Party","Monse Villarroel","FIN/ENG","dance","Red Temple"),
+  e("t13","thu","21:15","22:45","Biggest Conscious Single Party","","","other","Red Temple"),
+  e("t14","thu","23:15","00:30","Artist of Love: The Truth Code","Nicholas Policarpio","ENG","tantra","Red Temple",["K18"]),
+  e("t15","thu","14:00","15:15","Dance Her Free","Henna Perkkiö","FIN/ENG","dance","Mystic Soul"),
+  e("t16","thu","16:30","18:00","Velivoima – miesten työpaja","Miiska Van Renterghem","FIN","other","Mystic Soul"),
+  e("t17","thu","20:00","21:15","Myth of Sword of Love","Albert Mäkelä","FIN/ENG","coaching","Mystic Soul"),
+  e("t18","thu","21:45","23:30","How to Wake Up from Fear","Rytis Luko","ENG","lecture","Mystic Soul"),
+  e("t19","thu","14:30","16:00","Sacred Feminine Leadership","Deepthi / Kirsi Ranto","FIN/ENG","lecture","White Light Room"),
+  e("t20","thu","16:45","18:15","Yrttiapteekki & terapeuttiset tuoksut","Virpi Raipala-Cormier","FIN","lecture","White Light Room"),
+  e("t21","thu","21:45","22:30","Raw Light","Munezero","ENG","ceremony","White Light Room"),
+  e("t22","thu","16:15","18:00","Miniretriitti naisille","Emmi Nurmilaakso","FIN","ceremony","Heart Space",["Y"]),
+  e("t23","thu","20:00","21:15","Cultivating Compassion","Gloria Salo & Sarah Palu","FIN/ENG","meditation","Heart Space",["Y"]),
+  e("t24","thu","14:00","15:45","Siddha Kundalini Healing","Kimmo Nurminen","FIN/ENG","meditation","Flow of Life",["Y"]),
+  e("t25","thu","15:45","17:30","Valaistumisen laulu","Taavi Kassila","FIN","lecture","Flow of Life"),
+  e("t26","thu","20:00","23:00","AUM-Meditation","Antti Virolainen","FIN/ENG","other","Flow of Life",["S"]),
+  e("t27","thu","23:00","23:45","Äänimaljamatka aisteja avaamaan","Emmi Nurmilaakso","FIN","meditation","Flow of Life",["Y"]),
+  e("t28","thu","13:45","15:00","Onnellisuusminuutti","Ilkka Koppelomäki","FIN","coaching","Wisdom Temple"),
+  e("t29","thu","16:00","17:45","Integral Wholeness","Antti Virolainen","ENG","coaching","Wisdom Temple"),
+  e("t30","thu","19:45","21:15","Heal Your Pain with Men","Anna Lindfors","FIN/ENG","coaching","Wisdom Temple"),
+  e("t31","thu","22:00","23:30","Own Your Value","Roland Tokko","ENG","coaching","Wisdom Temple"),
+  e("t32","thu","14:15","15:30","Amazing Benefits of Fasting","Hanna Baumgartner","FIN/ENG","lecture","Divine Vision"),
+  e("t33","thu","17:00","18:00","Sense of Self","Jarno Mäkelä","FIN/ENG","dance","Divine Vision"),
+  e("t34","thu","19:45","21:30","Embodied Wisdom Massage","Petra Kaya & Kian Sanai","ENG","tantra","Divine Vision",["K18"]),
+  e("t35","thu","15:00","17:00","Art Walk / Taidekävely","","FIN/ENG","special","Art Cave"),
+  e("t36","thu","16:45","18:15","Feldenkrais®-menetelmä: Tutustu itseesi","Marko Seppälä","FIN","other","Share & Play",["Y"]),
+  e("t37","thu","19:45","21:15","Partner Shiatsu & Polarity","Virpi Raipala-Cormier","FIN","dance","Share & Play",["Y"]),
+  e("t38","thu","21:45","23:30","Art of Submission","Andy Buru","ENG","tantra","Share & Play",["K18","B"]),
+  e("t39","thu","16:00","17:45","Capoeira Angola","TikTek","ENG","dance","Beach Party Vibes"),
+  e("t40","thu","21:00","22:00","Katutanssi","Iina Parviainen","FIN","dance","Beach Party Vibes"),
+  e("t41","thu","16:00","17:45","Tea Ceremony","George Joy","ENG","ceremony","Tiipii"),
+  e("t42","thu","20:00","21:45","Renaissance Fire Ceremony","Elina Lovesta","FIN/ENG","ceremony","Tiipii"),
+  e("t43","thu","22:00","00:00","Open Space – Singing, Jamming & Music","","","special","Tiipii"),
+  e("t44","thu","14:00","15:00","Oasis Area Blessing Ceremony (co-creational)","","FIN/ENG","ceremony","Healers Oasis"),
+  e("t45","thu","16:00","17:30","Turvassa metsässä","Emmi Jansson","FIN","kids","Teen Lounge",["K"]),
+  e("t46","thu","20:00","21:00","Teen Lounge Get Together","","","kids","Teen Lounge"),
+
+  // ---------------- FRIDAY ----------------
+  e("f01","fri","09:00","10:15","From Survival to Presence","Tomi Kokko","ENG","yoga","Wildly Alive Main Stage",["Y"]),
+  e("f02","fri","12:00","14:00","Ecstatic Dance","Ihmeidentekijä","","ecstatic","Wildly Alive Main Stage"),
+  e("f03","fri","15:30","17:30","Ecstatic Dance","Arunji","","ecstatic","Wildly Alive Main Stage"),
+  e("f04","fri","18:30","20:30","Mantra Singing Circle","Highway to Bliss","","music","Wildly Alive Main Stage"),
+  e("f05","fri","21:00","23:00","Authentic Dance","DJ Toby One","","dj","Wildly Alive Main Stage"),
+  e("f06","fri","23:00","01:00","Dance Party with Heart and Groove","Korento","","dj","Wildly Alive Main Stage"),
+  e("f07","fri","08:00","09:30","Sielua herättelevä kundaliinijooga","Ari Marjamäki","FIN","yoga",null,["Y"]),
+  e("f08","fri","08:00","09:30","Rajajoogaa","Taavi Kassila","FIN","yoga",null,["Y"]),
+  e("f09","fri","07:30","09:15","Siddha Kundalini Healing","Kimmo Nurminen","FIN/ENG","meditation","Flow of Life",["Y"]),
+  e("f10","fri","09:30","11:00","Artist of Love: Sacred Union","Nicholas Policarpio","ENG","tantra",null,["K18"]),
+  e("f11","fri","09:30","11:15","Embodied Yin & Mantra","Anu Karoliina","ENG","yoga",null,["Y"]),
+  e("f12","fri","10:00","11:00","Music of the Circle","TikTek","ENG","sound",null),
+  e("f13","fri","11:30","12:30","Heartful Hatha – Elämänvoiman spiraalit","Kaisa Kärkkäinen","FIN","yoga",null,["Y"]),
+  e("f14","fri","11:00","12:30","Alkumatka","Ehea","","music",null),
+  e("f15","fri","11:30","13:15","Embodied Wisdom Massage","Petra Kaya & Kian Sanai","ENG","tantra",null,["K18"]),
+  e("f16","fri","10:00","11:30","Masculine Presence","Thomas Orboe","ENG","coaching",null),
+  e("f17","fri","13:00","14:45","The Passion Test","Janet Attwood","ENG","lecture","Hall of Transformation"),
+  e("f18","fri","13:00","14:45","Hearts Medicine – Singing Circle","Silja Kulo, Valhalla Deva & Iiro Kontio","FIN/ENG","music",null),
+  e("f19","fri","12:00","12:45","Gongi rentoutus","Asko Kallonen","FIN","meditation",null,["Y"]),
+  e("f20","fri","10:00","11:30","Sacred Yoni Egg Temple (women)","Annina Reet","FIN/ENG","tantra",null,["K18"]),
+  e("f21","fri","12:00","13:45","Innerdance – Paradigm Shift","Mari Rasimus","FIN/ENG","other",null,["Y","S"]),
+  e("f22","fri","10:45","12:30","Illness & Transgenerational Burdens","Elina Mikkola & Rubén Nagore","FIN/ENG","other",null),
+  e("f23","fri","11:00","12:15","Nauru­transformaatio","Henna Länsipää","FIN/ENG","other",null),
+  e("f24","fri","08:30","10:00","Brazilian Jiu-Jitsu Basics","Marko Seppälä","FIN/ENG","dance",null),
+  e("f25","fri","13:00","14:00","Naiseuden voima","Iina Parviainen","FIN","dance",null),
+  e("f26","fri","16:15","17:45","Magic Touch – Massage Workshop","Nicole Betita","ENG","coaching",null),
+  e("f27","fri","09:45","10:45","Kultainen portti","Pekka J. Mattila","FIN","coaching",null),
+  e("f28","fri","10:45","12:00","Tunnevoimasi","Musse Mammadov","FIN","coaching",null),
+  e("f29","fri","12:30","14:00","Heal Your Pain with Men","Anna Lindfors","FIN/ENG","coaching",null),
+  e("f30","fri","09:00","10:15","Paaston upeat vaikutukset","Hanna Baumgartner","FIN","lecture",null),
+  e("f31","fri","11:00","12:30","Shaktin pyörteissä: Saraswati","Mia Jokiniva","FIN","yoga",null,["Y"]),
+  e("f32","fri","13:00","14:45","Avaimesi uuteen sykliin","Päivi Kaskimäki","FIN","other",null),
+  e("f33","fri","11:30","12:30","Folk Wisdom From Nature","Helena Karhu","FIN/ENG","other",null),
+  e("f34","fri","15:15","17:00","Holosomatic® Breathwork","Alexis Alcalá","ENG","other","Hall of Transformation",["Y","S"]),
+  e("f35","fri","17:30","19:15","Naiseuden villi ja väkevä voima","Sonja Saagaia","FIN","ceremony","Hall of Transformation"),
+  e("f36","fri","20:30","22:00","Soulful Live Music Journey","Paul Izak","","music","Hall of Transformation"),
+  e("f37","fri","23:15","00:30","Sound Healing for Harmony","Misha Sramova","ENG","sound","Hall of Transformation",["Y"]),
+  e("f38","fri","14:00","15:45","Ydinhaavani parantava rakkaus","Maria Rosa & Janne Passiniemi","FIN","tantra","Red Temple",["K18"]),
+  e("f39","fri","16:30","18:15","Pyhyys todellisena kotinani","Maria Rosa Passiniemi","FIN","tantra","Red Temple",["K18"]),
+  e("f40","fri","19:00","20:45","Pyhä yhteys – tantrisen rakastelun polku","Maitri & Simo","FIN","tantra","Red Temple",["K18"]),
+  e("f41","fri","21:15","22:45","MELT: Sexstatic Dance","Shaft Uddin","ENG","tantra","Red Temple",["K18"]),
+  e("f42","fri","22:45","23:45","Handpan and Plant Music","Koné Motion","","music",null),
+  e("f43","fri","20:00","21:45","The Dark Temple Night","Laura Freya","FIN/ENG","tantra",null,["K18","B"]),
+  e("f44","fri","18:00","19:30","Northern Shamanic Breathwork","Merja Kallunki","FIN/ENG","dance",null,["Y","S"]),
+  e("f45","fri","16:00","17:15","Deep Water Rap Performance","Ameeba","","music",null),
+  e("f46","fri","14:30","15:30","Sweat & Pelvis Release","Monse Villarroel","FIN/ENG","dance",null),
+  e("f47","fri","16:30","17:45","Yin Spirals","Viivi Svala","FIN/ENG","yoga",null,["Y"]),
+  e("f48","fri","14:15","15:45","Awakening Bliss","Jonna Monola","ENG","yoga",null,["Y"]),
+  e("f49","fri","14:00","15:45","Feminine Heart Ceremony","Gloria Salo & Sarah Palu","FIN","ceremony",null),
+  e("f50","fri","18:30","20:15","Itkulle avautuminen vapautumisen väylänä","Leena & Liisa","FIN","sound",null,["S"]),
+  e("f51","fri","18:15","19:30","Sattuu ihan helvetisti","Harri-Pekka Pietikäinen","FIN","lecture",null),
+  e("f52","fri","19:30","21:15","Yhteyden peili","Ville Juurikkala","FIN","other",null),
+  e("f53","fri","21:00","22:45","Deep Connection Ceremony","Tero Suhonen","FIN/ENG","ceremony",null),
+  e("f54","fri","23:30","00:15","Rakkauden aalloilla syvärentoutus","Alma Solina","FIN","meditation",null,["Y"]),
+  e("f55","fri","20:00","21:30","Arising from the Abyss","Miki Sohlberg & Thomas Orboe","ENG","other",null),
+  e("f56","fri","21:45","23:00","Projekti Läpimurto (miehille)","Musse Mammadov","FIN","ceremony",null,["S"]),
+  e("f57","fri","13:00","14:00","Embodied Mission","Henna Perkkiö","FIN/ENG","coaching",null),
+  e("f58","fri","14:30","16:45","Death Meditation","Andy Buru","ENG","tantra",null,["K18","S"]),
+  e("f59","fri","14:30","16:00","Kizomba & Conscious Polarity","Nadine Bose","ENG","dance",null),
+  e("f60","fri","16:30","18:00","Cuban Salsa Basics","Amanda & Eevi","FIN/ENG","dance",null),
+  e("f61","fri","18:30","20:00","Soul in Motion","Munezero","ENG","dance",null),
+  e("f62","fri","20:30","21:45","Rueda de Casino","Amanda & Eevi","FIN/ENG","dance",null),
+  e("f63","fri","14:30","15:45","Ground Body, Mind & Spirit","Olli Sovijärvi","FIN/ENG","lecture",null),
+  e("f64","fri","17:15","18:30","Ihmeellinen yhteys","Päivi Kaskimäki & Ville Juurikkala","FIN","lecture",null),
+  e("f65","fri","17:30","19:00","Shaktin pyörteissä: Lakshmi","Mia Jokiniva","FIN","yoga",null,["Y"]),
+  e("f66","fri","15:30","17:00","Paradigmamuutos tulee – oletko valmis?","Mari Rasimus","FIN","lecture",null),
+  e("f67","fri","19:30","21:00","Irti peloista!","Ukko Kärkkäinen","FIN","lecture",null),
+  e("f68","fri","21:30","23:00","Inner Beloved Kundalini Yoga","Siri Vedya","FIN/ENG","yoga",null,["Y"]),
+  e("f69","fri","13:30","15:00","ADHD – naamioitu supervoima","Jenni Kallio","FIN","other",null),
+  e("f70","fri","16:00","17:15","The Dance Between Us","Jarno Mäkelä","FIN/ENG","dance",null),
+  e("f71","fri","18:00","19:30","Authentic Encounter","Antti Launonen","FIN/ENG","coaching",null),
+  e("f72","fri","15:00","16:30","NatureRESET (meeting at Beach Party Vibes)","Miki Sohlberg","FIN/ENG","other","Beach Party Vibes"),
+  e("f73","fri","09:00","10:00","Agni Hotra: Sacred Fire Ritual","Sai","ENG","ceremony","Tiipii"),
+  e("f74","fri","10:30","12:15","Shamanistinen seremoniatyö","Anja Kadziolka","FIN","ceremony","Tiipii",["S"]),
+  e("f75","fri","13:00","14:30","Yrityksesi sielu – kehollinen äänimatka","Elina Lovesta","FIN","other","Tiipii"),
+  e("f76","fri","15:00","16:15","Healing Intelligence of Mantra","Tomi Kokko & Sai","ENG","sound","Tiipii"),
+  e("f77","fri","16:45","18:15","Velivoima – miesten työpaja","Miiska Van Renterghem","FIN","other",null),
+  e("f78","fri","18:45","20:30","Drum Circle for Warriors","Jani Kasanen","FIN","sound","Tiipii"),
+  e("f79","fri","20:30","00:00","Open Space – Singing, Jamming & Music","","","special","Tiipii"),
+  e("f80","fri","17:15","19:00","Breathwork Mastery","Elina Mikkola & Rubén Nagore","ENG","other",null,["Y","S"]),
+  e("f81","fri","15:00","16:30","Speedfriending","CosmosKamut","FIN/ENG","other",null),
+  e("f82","fri","14:00","15:00","Football with Thought (teens)","Jukka Nisula","","kids","Football Field",["K"]),
+  e("f83","fri","12:00","13:00","Glittereitä","","","kids","Teen Lounge",["K"]),
+  e("f84","fri","20:00","21:00","Teen Lounge Party (Teen Host)","","","kids","Teen Lounge"),
+
+  // ---------------- SATURDAY ----------------
+  e("s01","sat","10:00","11:30","From Survival to Peace","Tomi Kokko & Sai","ENG","yoga",null,["Y"]),
+  e("s02","sat","07:30","08:45","Kundaliinijooga","Asko Kallonen","FIN","yoga",null,["Y"]),
+  e("s03","sat","08:00","09:15","Rebirth","Viivi Svala","FIN/ENG","yoga",null,["Y"]),
+  e("s04","sat","09:30","10:30","Yin with Lovesongs","Ronja Alatalo & Eeva Rajakangas","FIN/ENG","yoga",null,["Y"]),
+  e("s05","sat","11:15","12:45","Voice Your Freedom","Lulu & Mischka","ENG","sound",null),
+  e("s06","sat","13:30","15:15","Heaven and Earth Sound Journey","Anja Kadziolka & Hilda Kunnola","FIN/ENG","ceremony",null,["Y"]),
+  e("s07","sat","15:00","17:00","DJ Masterclass","Kareem Raïhani","ENG","dj",null),
+  e("s08","sat","12:00","13:45","Breathing Into Freedom","Pragita & Sudeva","FIN/ENG","dance",null,["Y","S"]),
+  e("s09","sat","18:00","19:00","Live Music Concert","Mikko Harju","","music","Wildly Alive Main Stage"),
+  e("s10","sat","19:30","21:00","Ecstatic Concert: Tribal Orchestra All Star Festival Magic","","","music","Wildly Alive Main Stage"),
+  e("s11","sat","22:00","00:00","Epic Trance Party","DJ OlliS","","dj","Wildly Alive Main Stage"),
+  e("s12","sat","00:00","02:00","Deep & Wild DJ Set","Kareem Raïhani","","dj","Wildly Alive Main Stage"),
+  e("s13","sat","21:45","23:45","Sonic Medicine Concert","Lulu & Mischka","","music",null),
+  e("s14","sat","00:30","01:15","Rauhoittava gongi-rentoutus","Ari Marjamäki","FIN","sound",null,["Y"]),
+  e("s15","sat","20:15","21:45","Saa mitä haluat -bileet","Ilkka Koppelomäki","FIN","coaching",null),
+  e("s16","sat","18:00","19:45","Holosomatic® Experience","Alexis Alcalá","ENG","other",null,["Y","S"]),
+  e("s17","sat","09:30","11:15","Relational Alchemy","Nadine Bose","ENG","tantra","Red Temple",["K18"]),
+  e("s18","sat","11:45","13:30","Seksuaalisuuden polariteetit","Maitri & Simo","FIN","tantra","Red Temple",["K18"]),
+  e("s19","sat","16:30","18:15","Tantra for Couples","Pragita & Sudeva","FIN/ENG","tantra","Red Temple",["K18"]),
+  e("s20","sat","18:45","20:30","Ekstaasiin – energiaorgasmin aalloilla","Maitri & Simo","FIN","tantra","Red Temple",["K18","B"]),
+  e("s21","sat","21:00","22:45","Loving Tantric Domination","Maria Rosa & Janne Passiniemi","FIN","tantra","Red Temple",["K18","B"]),
+  e("s22","sat","14:00","15:45","Alaston Catwalk","Anu Diosa","FIN","other",null,["N","K18"]),
+  e("s23","sat","22:00","23:30","Northern Shamanic Breathwork","Merja Kallunki","FIN/ENG","dance",null,["Y","S"]),
+  e("s24","sat","15:45","17:30","Feminine Fury – Raivottaret","Laura Freya","FIN/ENG","other",null,["S"]),
+  e("s25","sat","13:45","15:15","Artist of Love: Sacred Touch","Nicholas Policarpio","ENG","tantra",null,["K18"]),
+  e("s26","sat","11:30","13:15","Finnish Ceremonial Mantra Concert","Jutta Toivonen","","music",null),
+  e("s27","sat","09:00","10:45","Movement & Power of Breathe","Merja Kallunki","FIN/ENG","dance",null,["Y"]),
+  e("s28","sat","10:00","11:30","Voice of the Heart Workshop","Hilda & VIKA","ENG","sound",null),
+  e("s29","sat","12:45","14:15","Elämänvoiman virrassa -jooga","Siri Vedya & Ari Marjamäki","FIN","yoga",null,["Y"]),
+  e("s30","sat","14:45","16:15","Alkulaulu / Source Singing","Ehea","FIN/ENG","sound",null),
+  e("s31","sat","20:15","21:30","Shakti Bhakti Kirtan","Anu Karoliina","","music",null),
+  e("s32","sat","21:00","22:45","Shamanic Dance Ceremony","Anja Kadziolka","FIN/ENG","ceremony",null,["S"]),
+  e("s33","sat","21:00","22:45","Innerdance – Paradigm Shift","Mari Rasimus","FIN/ENG","other",null,["Y","S"]),
+  e("s34","sat","21:15","22:30","Projekti Läpimurto (miehille)","Musse Mammadov","FIN","ceremony",null,["S"]),
+  e("s35","sat","22:30","00:00","Social Latin Dancing","Amanda & Eevi","FIN/ENG","dance",null),
+  e("s36","sat","19:00","20:30","Tietoisuuden matka -meditaatio","Antti Launonen","FIN","meditation",null,["Y"]),
+  e("s37","sat","17:15","18:45","The Art of Yoni Healing","Shaft Uddin","ENG","lecture",null,["K18"]),
+  e("s38","sat","20:30","22:00","Inner Calm","Munezero","ENG","dance",null),
+  e("s39","sat","17:00","18:30","Dance of Embodied Wisdom","Petra Kaya & Kian Sanai","ENG","dance",null),
+  e("s40","sat","15:30","16:45","Sensual Feminine Healing","Monse Villarroel","FIN/ENG","dance",null),
+  e("s41","sat","18:30","20:00","Heartful Hatha – Elämänvoiman spiraalit","Kaisa Kärkkäinen","FIN","yoga",null,["Y"]),
+  e("s42","sat","14:30","16:15","The Art of Polarity","Gloria Salo & Thomas Orboe","ENG","tantra",null,["K18"]),
+  e("s43","sat","14:30","16:00","Brazilian Jiu-Jitsu Basics","Marko Seppälä","FIN/ENG","dance",null),
+  e("s44","sat","12:15","13:30","Temple of She","Jonna Monola","ENG","yoga",null,["Y"]),
+  e("s45","sat","11:00","12:00","Naurujooga","Henna Länsipää & Henna's laughter family","","other",null),
+  e("s46","sat","13:15","15:00","Miesmatka","Harri-Pekka Pietikäinen","FIN","other",null),
+  e("s47","sat","08:00","09:30","The Power of Sisterhood","Henna Perkkiö","FIN/ENG","other",null),
+  e("s48","sat","10:00","11:45","Vapaudu taakkasiirtymästä","Elina Mikkola & Rubén Nagore","FIN","other",null,["S"]),
+  e("s49","sat","11:15","12:30","Myth of Sword of Love","Albert Mäkelä","FIN/ENG","coaching",null),
+  e("s50","sat","16:00","17:30","Wild & Free Music Concert","Alma Solina","","music",null),
+  e("s51","sat","19:15","20:45","Tantric Erotic Fire Activation (couples)","Annina Reet","FIN/ENG","tantra",null,["K18"]),
+  e("s52","sat","16:30","18:00","Partner Yoga","Nicole Betita","ENG","yoga",null,["Y"]),
+  e("s53","sat","12:30","14:00","Primitiivirefleksit & hermosto","Emmi Nurmilaakso","FIN","lecture",null),
+  e("s54","sat","10:00","11:15","Tunnevoimasi","Musse Mammadov","FIN","coaching",null),
+  e("s55","sat","11:45","13:30","How to Release Emotional Pain","Rytis Luko","ENG","lecture",null),
+  e("s56","sat","10:00","11:30","Turvassa.","Ukko Kärkkäinen","FIN","lecture",null),
+  e("s57","sat","09:30","11:00","Only Fools – Shameless Clowns","Laura Freya","FIN/ENG","other",null),
+  e("s58","sat","14:00","15:00","Rajaton sinä","Pekka J. Mattila","FIN","coaching",null),
+  e("s59","sat","12:00","13:15","Irtipäästäminen","Ville Juurikkala","FIN","lecture",null),
+  e("s60","sat","08:00","09:30","Shaktin pyörteissä: Durga","Mia Jokiniva","FIN","yoga",null,["Y"]),
+  e("s61","sat","12:00","13:30","Speedfriending","CosmosKamut","FIN/ENG","other",null),
+  e("s62","sat","12:30","13:00","Sauna Ceremony: Hero's Journey","Irina Energy","ENG","ceremony","Sandy Beach Sauna"),
+  e("s63","sat","13:45","15:15","Semen Retention for Men","Shaft Uddin","ENG","lecture",null,["K18"]),
+  e("s64","sat","15:45","17:30","Ancient Manifestation Secrets","Janet Attwood","ENG","lecture",null),
+  e("s65","sat","18:00","19:30","Shaktin pyörteissä: Kali","Mia Jokiniva","FIN","yoga",null,["Y"]),
+  e("s66","sat","20:00","21:15","Kemikaaliton luonnollinen arki","Hanna Baumgartner","FIN","lecture",null),
+  e("s67","sat","15:30","17:00","ADHD ihmissuhteissa","Jenni Kallio","FIN","other",null),
+  e("s68","sat","17:30","18:30","Level Up Your Money EQ in 2026","Ken Honda","ENG","other",null),
+  e("s69","sat","19:00","20:00","Energy Activation of Abundance","Misha Sramova","ENG","coaching",null),
+  e("s70","sat","14:00","15:15","The LOVE Experience","Sai","ENG","yoga",null,["Y"]),
+  e("s71","sat","18:30","20:00","Coming Alive","Nadine Bose","ENG","dance",null),
+  e("s72","sat","14:00","16:00","Suntanssit goes Beach Party","DJ Toby One","","dj","Beach Party Vibes"),
+  e("s73","sat","08:30","09:30","Pyhä elämä – seremoniallinen meditaatio","Sonja Saagaia","FIN","meditation",null,["Y"]),
+  e("s74","sat","10:00","11:30","Shamanic Activism and Wisdom","Helena Karhu","FIN/ENG","other",null),
+  e("s75","sat","12:00","13:45","Itkulle avautuminen vapautumisen väylänä","Leena & Liisa","FIN","sound",null,["S"]),
+  e("s76","sat","15:45","17:30","Drum Circle for Warriors (men)","Jani Kasanen","FIN","sound","Tiipii"),
+  e("s77","sat","18:00","19:45","Äänellä kohti voimaa -äänityöpaja","Sonja Saagaia","FIN","sound","Tiipii"),
+  e("s78","sat","21:45","00:00","Open Space – Singing, Jamming & Music","","","special","Tiipii"),
+  e("s79","sat","20:15","21:45","Vocal Freedom & Being Wildly Authentically You!","Silja Kulo & Valhalla Deva","ENG","sound",null),
+  e("s80","sat","11:00","12:00","Football with Thought (teens)","Jukka Nisula","","kids","Football Field",["K"]),
+  e("s81","sat","12:00","13:00","Glittereitä","","","kids","Teen Lounge",["K"]),
+  e("s82","sat","14:30","16:00","Tunnetko sä?","Emmi Jansson","","kids","Teen Lounge",["K"]),
+  e("s83","sat","16:30","18:00","Saa mitä haluat – teinien oma valmennus","Ilkka Koppelomäki","","kids","Teen Lounge"),
+  e("s84","sat","20:00","21:00","Teen Lounge Get Together","","","kids","Teen Lounge"),
+  e("s85","sat","09:00","10:00","Meditation & Planet Blessing","Virpi Raipala-Cormier","FIN","meditation",null,["Y"]),
+  e("s86","sat","18:00","19:30","Power of Eva and Lilith","Kirsti Kuosmanen","FIN/ENG","tantra",null,["K18"]),
+  e("s87","sat","16:45","17:45","Lempeyden yinjooga & jooganidra","Kaisa Kärkkäinen","FIN","yoga",null,["Y"]),
+  e("s88","sat","18:30","20:00","Sacred Unity Ceremony","Tero Suhonen","FIN/ENG","ceremony",null),
+
+  // ---------------- SUNDAY ----------------
+  e("u01","sun","08:00","09:45","Sacred Life Force Ceremony","Anja Kadziolka","FIN/ENG","ceremony",null,["S"]),
+  e("u02","sun","10:30","11:45","Autenttinen & eeppinen esiintyjä","Henna Länsipää","","other",null),
+  e("u03","sun","12:30","13:30","Flow with Lovesongs","Ronja Alatalo & Eeva Rajakangas","FIN/ENG","yoga",null,["Y"]),
+  e("u04","sun","08:30","10:00","Held in Sound","Tobias Lundgren","","sound",null,["Y"]),
+  e("u05","sun","10:30","11:30","Unimyytti","Katariina Souri","FIN","lecture",null),
+  e("u06","sun","12:00","13:00","Level Up Your Money EQ in 2026","Ken Honda","ENG","other",null),
+  e("u07","sun","08:30","10:00","Artist of Love: Sacred Union","Nicholas Policarpio","ENG","tantra",null,["K18"]),
+  e("u08","sun","10:30","12:15","Anteeksiantorituaali","Maria Rosa Passiniemi","FIN","tantra",null,["K18","S"]),
+  e("u09","sun","13:30","15:15","Tantra for Couples","Pragita & Sudeva","FIN/ENG","tantra",null,["K18"]),
+  e("u10","sun","14:00","15:30","SoundMedicine – Music Journey","Hale Heikkilä","","sound",null,["Y"]),
+  e("u11","sun","13:30","15:15","Holosomatic® Breathwork","Alexis Alcalá","ENG","other",null,["Y","S"]),
+  e("u12","sun","07:30","09:00","Strong Embodied Alchemy","Matti Pääaho","FIN/ENG","yoga",null,["Y"]),
+  e("u13","sun","09:30","11:15","Movement & Power of Breathe","Merja Kallunki","FIN/ENG","dance",null,["Y"]),
+  e("u14","sun","12:00","13:30","Elämä kantaa – Healing Music Concert","Alma Solina","","music","Mystic Soul"),
+  e("u15","sun","14:00","15:30","Hearts in Harmony ~ Concert","Silja Kulo","","music",null),
+  e("u16","sun","07:30","08:15","Gongi rentoutus","Asko Kallonen","FIN","meditation",null,["Y"]),
+  e("u17","sun","09:00","10:30","Voice of the Heart Workshop","Hilda & VIKA","ENG","sound",null),
+  e("u18","sun","11:00","12:45","Siddha Kundalini Healing","Kimmo Nurminen","FIN/ENG","meditation","Flow of Life",["Y"]),
+  e("u19","sun","13:45","15:15","Alkuääni / Source Voice","Ehea","FIN/ENG","sound",null),
+  e("u20","sun","08:30","10:15","Kvanttihypnoosi­matka","Anu Diosa","FIN","other",null,["Y"]),
+  e("u21","sun","08:30","10:15","Uskalla tuntea ja luottaa","Harri-Pekka Pietikäinen","FIN","other",null),
+  e("u22","sun","11:00","12:45","Embodied Wisdom Ceremony","Petra Kaya & Kian Sanai","ENG","ceremony",null),
+  e("u23","sun","11:00","12:30","Feldenkrais® – Know Thyself","Marko Seppälä","ENG","other",null,["Y"]),
+  e("u24","sun","14:00","15:45","Meditaatio","Taavi Kassila","FIN","meditation",null,["Y"]),
+  e("u25","sun","13:30","15:15","Omista herkkyytesi (miehet)","Janne Passiniemi","FIN","tantra",null,["K18"]),
+  e("u26","sun","10:00","11:45","Radiantly Alive Shakti Dance®","Siri Vedya","FIN/ENG","dance",null,["Y"]),
+  e("u27","sun","12:45","13:45","Joy in Motion","Munezero","ENG","dance",null),
+  e("u28","sun","14:15","15:45","Kizomba & Conscious Polarity","Nadine Bose","ENG","dance",null),
+  e("u29","sun","09:30","11:15","Miellyttämätön mies","Antti Virolainen","FIN","coaching",null),
+  e("u30","sun","14:45","15:45","One Minute for Happiness","Ilkka Koppelomäki","ENG","coaching",null),
+  e("u31","sun","10:00","11:45","Alliance Secrets for $ Wealth","Janet Attwood","ENG","lecture",null),
+  e("u32","sun","12:30","13:45","Chemical Free Natural Life","Hanna Baumgartner","ENG","lecture",null),
+  e("u33","sun","14:30","15:45","Kiitollisuuden parantava voima","Antti Launonen","FIN","lecture",null),
+  e("u34","sun","09:00","10:00","Earth & Sky – Qi Gong","Lulu & Mischka","ENG","dance",null),
+  e("u35","sun","10:30","12:00","Neurodiversiteetti pelastaa maailman","Jenni Kallio","FIN","other",null),
+  e("u36","sun","13:30","15:00","Naisten voimavuodet","Kirsti Kuosmanen","FIN","other",null),
+  e("u37","sun","10:30","11:00","Silent Wisdom Sauna Ceremony","Irina Energy","ENG","ceremony","Sandy Beach Sauna"),
+  e("u38","sun","09:30","11:15","Tea Ceremony","George Joy","ENG","ceremony","Tiipii"),
+  e("u39","sun","11:30","16:00","Open Space – Singing, Jamming & Music","","","special","Tiipii"),
+  e("u40","sun","13:00","14:15","Metsämeditaatio (meeting at Beach Party Vibes)","Ville Juurikkala","FIN","meditation","Beach Party Vibes"),
+  e("u41","sun","13:00","14:30","5 Star Speaker","Roland Tokko","ENG","coaching",null),
+  e("u42","sun","10:00","11:00","Voi elämä!","Emmi Jansson","","kids","Teen Lounge",["K"]),
+  e("u43","sun","12:00","13:00","Glittereitä","","","kids","Teen Lounge",["K"]),
+  e("u44","sun","13:30","14:30","Teen Lounge Get Together","","","kids","Teen Lounge"),
+  e("u45","sun","16:00","17:00","Closing Ceremony – Together we are Wildly Alive!","","FIN/ENG","special","Wildly Alive Main Stage"),
+];
+
+/* Natural High 2026 planner — app logic (v2: grid view + live descriptions) */
+(function () {
+  "use strict";
+
+  // ---------- state ----------
+  const STORE_PLAN = "nh2026.plan";
+  const STORE_DAY  = "nh2026.day";
+  const STORE_VIEW = "nh2026.view";
+
+  const state = {
+    day: load(STORE_DAY, "thu"),
+    view: load(STORE_VIEW, "grid"),            // "list" | "grid"
+    plan: new Set(load(STORE_PLAN, [])),
+    planOnly: false,
+    cats: new Set(), labels: new Set(), langs: new Set(),
+  };
+  if (!DAYS.some(d => d.id === state.day)) state.day = "thu";
+  if (!["list", "grid"].includes(state.view)) state.view = "grid";
+
+  function load(key, fallback) {
+    try { const v = JSON.parse(localStorage.getItem(key)); return v ?? fallback; }
+    catch { return fallback; }
+  }
+  function store(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
+  }
+
+  // ---------- helpers ----------
+  const $ = s => document.querySelector(s);
+  const byId = Object.fromEntries(EVENTS.map(ev => [ev.id, ev]));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+
+  // times 00:00–04:59 belong to the night of the same festival day
+  const toMin = t => { const [h, m] = t.split(":").map(Number); return (h < 5 ? h + 24 : h) * 60 + m; };
+  const hourLabel = h => String(h % 24).padStart(2, "0") + ":00";
+
+  function langsOf(ev) {
+    return ev.lang ? ev.lang.split("/").map(s => s.trim().toUpperCase()) : [];
+  }
+
+  // ---------- day tabs ----------
+  const dayTabs = $("#dayTabs");
+  DAYS.forEach(d => {
+    const b = document.createElement("button");
+    b.className = "day-tab"; b.textContent = d.name;
+    b.setAttribute("role", "tab"); b.dataset.day = d.id;
+    b.addEventListener("click", () => { state.day = d.id; store(STORE_DAY, d.id); render(); });
+    dayTabs.appendChild(b);
+  });
+
+  // ---------- view switch ----------
+  const viewBtns = { list: $("#viewList"), grid: $("#viewGrid") };
+  Object.entries(viewBtns).forEach(([v, btn]) =>
+    btn.addEventListener("click", () => { state.view = v; store(STORE_VIEW, v); render(); }));
+
+  // ---------- filter chips ----------
+  const catChips = $("#catChips");
+  Object.entries(CATEGORIES).forEach(([key, c]) => {
+    const b = document.createElement("button");
+    b.className = "chip cat"; b.style.setProperty("--c", c.color);
+    b.innerHTML = `<span class="dot"></span>${c.name}`;
+    b.addEventListener("click", () => { toggle(state.cats, key, b); render(); });
+    catChips.appendChild(b);
+  });
+  const labelChips = $("#labelChips");
+  Object.entries(LABELS).forEach(([key, text]) => {
+    const b = document.createElement("button");
+    b.className = "chip";
+    b.textContent = key + " · " + text.split(" (")[0].split(" – ")[0];
+    b.title = text;
+    b.addEventListener("click", () => { toggle(state.labels, key, b); render(); });
+    labelChips.appendChild(b);
+  });
+  const langChips = $("#langChips");
+  ["FIN", "ENG"].forEach(l => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.textContent = l;
+    b.addEventListener("click", () => { toggle(state.langs, l, b); render(); });
+    langChips.appendChild(b);
+  });
+  function toggle(set, key, btn) {
+    set.has(key) ? set.delete(key) : set.add(key);
+    btn.classList.toggle("on", set.has(key));
+  }
+
+  // ---------- toolbar ----------
+  const planToggle = $("#planToggle");
+  planToggle.addEventListener("click", () => {
+    state.planOnly = !state.planOnly;
+    planToggle.setAttribute("aria-pressed", String(state.planOnly));
+    render();
+  });
+  const filterToggle = $("#filterToggle");
+  const filterPanel = $("#filterPanel");
+  filterToggle.addEventListener("click", () => {
+    const open = filterPanel.hidden;
+    filterPanel.hidden = !open;
+    filterToggle.setAttribute("aria-expanded", String(open));
+  });
+  $("#clearFilters").addEventListener("click", () => {
+    state.cats.clear(); state.labels.clear(); state.langs.clear();
+    document.querySelectorAll(".filter-panel .chip.on").forEach(c => c.classList.remove("on"));
+    render();
+  });
+
+  // ---------- filtering ----------
+  function matches(ev) {
+    if (state.planOnly && !state.plan.has(ev.id)) return false;
+    if (state.cats.size && !state.cats.has(ev.cat)) return false;
+    if (state.labels.size && ![...state.labels].every(l => ev.labels.includes(l))) return false;
+    if (state.langs.size) {
+      const evLangs = langsOf(ev);
+      if (!evLangs.length || ![...state.langs].some(l => evLangs.includes(l))) return false;
+    }
+    return true;
+  }
+
+  // ---------- plan ----------
+  function togglePlan(id) {
+    state.plan.has(id) ? state.plan.delete(id) : state.plan.add(id);
+    store(STORE_PLAN, [...state.plan]);
+    render();
+  }
+  function starHTML(ev) {
+    const on = state.plan.has(ev.id);
+    return `<button class="star-btn ${on ? "on" : ""}" data-star="${ev.id}"
+              aria-pressed="${on}" aria-label="${on ? "Remove from" : "Add to"} my plan">★</button>`;
+  }
+  // one delegated handler: star taps toggle, other taps open the sheet
+  document.addEventListener("click", e => {
+    const star = e.target.closest("[data-star]");
+    if (star) { e.stopPropagation(); togglePlan(star.dataset.star); return; }
+    const block = e.target.closest("[data-event]");
+    if (block) openSheet(block.dataset.event);
+  });
+
+  // ---------- render ----------
+  const scheduleEl = $("#schedule");
+
+  function render() {
+    dayTabs.querySelectorAll(".day-tab").forEach(t =>
+      t.setAttribute("aria-selected", String(t.dataset.day === state.day)));
+    Object.entries(viewBtns).forEach(([v, btn]) =>
+      btn.setAttribute("aria-pressed", String(v === state.view)));
+
+    $("#planCount").textContent = state.plan.size ? `(${state.plan.size})` : "";
+    const nFilters = state.cats.size + state.labels.size + state.langs.size;
+    $("#filterCount").textContent = nFilters ? `(${nFilters})` : "";
+    $("#clearFilters").hidden = nFilters === 0;
+
+    const events = EVENTS.filter(ev => ev.day === state.day && matches(ev))
+                         .sort((a, b) => toMin(a.start) - toMin(b.start));
+    scheduleEl.innerHTML = "";
+    scheduleEl.className = "schedule " + state.view;
+
+    if (!events.length) {
+      scheduleEl.innerHTML = `<div class="empty"><strong>Nothing here.</strong><br>
+        ${state.planOnly ? "You haven't starred any workshops for this day yet — tap a ★ to add one."
+                         : "Try removing some filters."}</div>`;
+      return;
+    }
+    state.view === "grid" ? renderGrid(events) : renderList(events);
+  }
+
+  // ---------- list view ----------
+  function renderList(events) {
+    let currentHour = null, groupEl = null;
+    events.forEach(ev => {
+      const h = Math.floor(toMin(ev.start) / 60);
+      if (h !== currentHour) {
+        currentHour = h;
+        groupEl = document.createElement("section");
+        groupEl.className = "time-group";
+        groupEl.innerHTML = `<h2 class="time-head">${hourLabel(h)}${h >= 24 ? " · after midnight" : ""}</h2>`;
+        scheduleEl.appendChild(groupEl);
+      }
+      const c = CATEGORIES[ev.cat] || CATEGORIES.other;
+      const div = document.createElement("div");
+      div.className = "card" + (state.plan.has(ev.id) ? " attending" : "");
+      div.style.setProperty("--cat", c.color);
+      div.dataset.event = ev.id;
+      div.setAttribute("role", "button"); div.tabIndex = 0;
+      const badges = ev.labels.map(l => `<span class="badge" title="${esc(LABELS[l] || l)}">${l}</span>`).join("");
+      div.innerHTML = `
+        ${starHTML(ev)}
+        <div class="card-row">
+          <span class="card-time">${ev.start}–${ev.end}</span>
+          <span class="card-title">${esc(ev.title)}${badges ? `<span class="badges">${badges}</span>` : ""}</span>
+        </div>
+        <div class="card-meta">${[ev.teacher, ev.venue || "", ev.lang].filter(Boolean).map(esc).join(" · ")}</div>`;
+      groupEl.appendChild(div);
+    });
+  }
+
+  // ---------- grid view (venues × time) ----------
+  const PX_PER_MIN = 1.3, COL_W = 138, TIME_W = 44, HEAD_H = 54;
+
+  function packLanes(evts) { // assign overlapping events to side-by-side lanes
+    const lanes = [];
+    evts.forEach(ev => {
+      const s = toMin(ev.start), e = Math.max(toMin(ev.end), s + 30);
+      let li = lanes.findIndex(end => end <= s);
+      if (li === -1) { li = lanes.length; lanes.push(0); }
+      lanes[li] = e;
+      ev._lane = li;
+    });
+    return lanes.length;
+  }
+
+  function renderGrid(events) {
+    // columns: venues (in VENUES order) that have events today, then a TBC column
+    const cols = [];
+    VENUES.forEach(v => {
+      const evts = events.filter(ev => ev.venue === v);
+      if (evts.length) cols.push({ name: v, evts });
+    });
+    const tbc = events.filter(ev => !ev.venue);
+    if (tbc.length) cols.push({ name: "Venue TBC", evts: tbc, tbc: true });
+
+    const t0 = Math.floor(Math.min(...events.map(ev => toMin(ev.start))) / 60) * 60;
+    const t1 = Math.ceil(Math.max(...events.map(ev => Math.max(toMin(ev.end), toMin(ev.start) + 30))) / 60) * 60;
+    const bodyH = (t1 - t0) * PX_PER_MIN;
+
+    cols.forEach(col => { col.lanes = packLanes(col.evts); col.w = Math.max(COL_W, col.lanes * 108); });
+    const totalW = TIME_W + cols.reduce((s, c) => s + c.w, 0);
+
+    const scroll = document.createElement("div");
+    scroll.className = "grid-scroll";
+    const inner = document.createElement("div");
+    inner.className = "grid-inner";
+    inner.style.width = totalW + "px";
+    inner.style.height = (HEAD_H + bodyH) + "px";
+    scroll.appendChild(inner);
+
+    // venue header (sticky top)
+    const head = document.createElement("div");
+    head.className = "g-head";
+    head.innerHTML = `<div class="g-corner" style="width:${TIME_W}px"></div>` +
+      cols.map(c => `<div class="g-venue ${c.tbc ? "tbc" : ""}" style="width:${c.w}px">${esc(c.name)}</div>`).join("");
+    inner.appendChild(head);
+
+    // time rail (sticky left) + hour lines
+    const rail = document.createElement("div");
+    rail.className = "g-rail";
+    rail.style.width = TIME_W + "px"; rail.style.height = bodyH + "px";
+    for (let t = t0; t < t1; t += 60) {
+      const y = (t - t0) * PX_PER_MIN;
+      rail.insertAdjacentHTML("beforeend",
+        `<div class="g-time" style="top:${y}px">${hourLabel(t / 60)}</div>`);
+      inner.insertAdjacentHTML("beforeend",
+        `<div class="g-line" style="top:${HEAD_H + y}px;width:${totalW}px"></div>`);
+    }
+    inner.appendChild(rail);
+
+    // event blocks
+    let x = TIME_W;
+    cols.forEach(col => {
+      const laneW = col.w / col.lanes;
+      col.evts.forEach(ev => {
+        const s = toMin(ev.start), e = Math.max(toMin(ev.end), s + 30);
+        const c = CATEGORIES[ev.cat] || CATEGORIES.other;
+        const el = document.createElement("div");
+        el.className = "g-event" + (state.plan.has(ev.id) ? " attending" : "");
+        el.dataset.event = ev.id;
+        el.setAttribute("role", "button"); el.tabIndex = 0;
+        el.style.setProperty("--cat", c.color);
+        el.style.left = (x + ev._lane * laneW + 2) + "px";
+        el.style.top = (HEAD_H + (s - t0) * PX_PER_MIN) + "px";
+        el.style.width = (laneW - 5) + "px";
+        el.style.height = ((e - s) * PX_PER_MIN - 3) + "px";
+        el.innerHTML = `${starHTML(ev)}
+          <span class="g-ev-time">${ev.start}–${ev.end}</span>
+          <span class="g-ev-title">${esc(ev.title)}</span>`;
+        inner.appendChild(el);
+      });
+      x += col.w;
+    });
+
+    scheduleEl.appendChild(scroll);
+  }
+
+  // ---------- workshop descriptions, live from naturalhighfestival.fi ----------
+  // The site is WordPress: its public REST API allows cross-origin GETs, so we
+  // fetch the artist page content on demand and cache it in localStorage.
+  const descCache = load("nh2026.desc", {});
+  const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9åäö ]/gi, " ").replace(/\s+/g, " ").trim();
+
+  async function fetchArtistSections(url) {
+    const slug = new URL(url).pathname.replace(/\//g, "");
+    if (descCache[slug]) return descCache[slug];
+    let html = null;
+    for (const type of ["posts", "pages"]) {
+      try {
+        const r = await fetch(`https://naturalhighfestival.fi/wp-json/wp/v2/${type}?slug=${slug}&_fields=content`);
+        if (!r.ok) continue;
+        const arr = await r.json();
+        if (arr.length) { html = arr[0].content.rendered; break; }
+      } catch { /* try next */ }
+    }
+    if (!html) return null;
+    // split content into { bio, sections: [{title, text}] } by h-headings
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const out = { bio: "", sections: [] };
+    let cur = null;
+    doc.body.querySelectorAll("h1,h2,h3,h4,h5,p,li").forEach(el => {
+      const txt = el.textContent.replace(/\s+/g, " ").trim();
+      if (!txt) return;
+      if (/^H[1-5]$/.test(el.tagName)) {
+        cur = { title: txt, text: "" };
+        out.sections.push(cur);
+      } else if (cur) cur.text += (cur.text ? "\n\n" : "") + txt;
+      else out.bio += (out.bio ? "\n\n" : "") + txt;
+    });
+    descCache[slug] = out;
+    store("nh2026.desc", descCache);
+    return out;
+  }
+
+  function pickSection(data, title) {
+    const t = norm(title);
+    return data.sections.find(s => { const n = norm(s.title); return n && (t.includes(n) || n.includes(t)); })
+        || data.sections.find(s => { const w = norm(s.title).split(" ").filter(x => x.length > 3);
+                                     return w.length && w.every(x => t.includes(x)); });
+  }
+
+  // ---------- detail sheet ----------
+  const overlay = $("#overlay");
+  const sheetBody = $("#sheetBody");
+
+  function openSheet(id) {
+    const ev = byId[id];
+    const c = CATEGORIES[ev.cat] || CATEGORIES.other;
+    const day = DAYS.find(d => d.id === ev.day).name;
+    const inPlan = state.plan.has(id);
+    const url = ev.teacher && ARTIST_URLS[ev.teacher];
+
+    sheetBody.innerHTML = `
+      <span class="cat-pill" style="--cat:${c.color}">${c.name}</span>
+      <h2 id="sheetTitle">${esc(ev.title)}</h2>
+      ${ev.teacher ? `<p class="teacher">${esc(ev.teacher)}</p>` : ""}
+      <ul class="facts">
+        <li><span class="k">When</span><span>${day} ${ev.start}–${ev.end}</span></li>
+        <li><span class="k">Where</span><span>${ev.venue ? esc(ev.venue) : '<span class="tbc">Venue TBC — check the official program</span>'}</span></li>
+        ${ev.lang ? `<li><span class="k">Language</span><span>${esc(ev.lang)}</span></li>` : ""}
+      </ul>
+      ${ev.labels.length ? `<ul class="label-list">${
+          ev.labels.map(l => `<li><b>${l}</b> — ${esc(LABELS[l] || l)}</li>`).join("")}</ul>` : ""}
+      ${url ? `<div class="desc" id="descBox"><span class="desc-loading">Fetching info from the festival site…</span></div>` : ""}
+      <button class="attend-btn ${inPlan ? "on" : ""}" data-star="${ev.id}" data-sheet="1">
+        ${inPlan ? "★ In my plan — tap to remove" : "☆ Add to my plan"}
+      </button>
+      ${url ? `<a class="artist-link" href="${url}" target="_blank" rel="noopener">Open ${esc(ev.teacher)}'s page →</a>` : ""}
+    `;
+    overlay.hidden = false;
+    document.body.style.overflow = "hidden";
+
+    if (url) loadDesc(ev, url);
+  }
+
+  async function loadDesc(ev, url) {
+    const box = $("#descBox");
+    try {
+      const data = await fetchArtistSections(url);
+      if (!box || !overlay.hidden === false) { /* sheet may be closed */ }
+      if (!box) return;
+      if (!data) throw new Error("no data");
+      const section = pickSection(data, ev.title);
+      const parts = [];
+      if (section) {
+        parts.push(`<h3>${esc(section.title)}</h3><p>${esc(section.text).replace(/\n\n/g, "</p><p>")}</p>`);
+        if (data.bio) parts.push(`<h3>About ${esc(ev.teacher)}</h3><p>${esc(data.bio).replace(/\n\n/g, "</p><p>")}</p>`);
+      } else {
+        if (data.bio) parts.push(`<p>${esc(data.bio).replace(/\n\n/g, "</p><p>")}</p>`);
+        data.sections.forEach(s =>
+          parts.push(`<h3>${esc(s.title)}</h3><p>${esc(s.text).replace(/\n\n/g, "</p><p>")}</p>`));
+      }
+      box.innerHTML = parts.join("") || `<p class="tbc">No description found — see the artist page below.</p>`;
+    } catch {
+      if (box) box.innerHTML = `<p class="tbc">Couldn't reach the festival site from here — use the artist page link below.</p>`;
+    }
+  }
+
+  // keep the sheet's attend button in sync (delegated star handler re-renders the
+  // schedule but not the sheet), so patch it after every star toggle
+  document.addEventListener("click", e => {
+    const btn = e.target.closest("[data-sheet]");
+    if (!btn) return;
+    const on = state.plan.has(btn.dataset.star);
+    btn.classList.toggle("on", on);
+    btn.innerHTML = on ? "★ In my plan — tap to remove" : "☆ Add to my plan";
+  });
+
+  function closeSheet() {
+    overlay.hidden = true;
+    document.body.style.overflow = "";
+  }
+  $("#sheetClose").addEventListener("click", closeSheet);
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeSheet(); });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !overlay.hidden) closeSheet();
+    if ((e.key === "Enter" || e.key === " ") && e.target.dataset && e.target.dataset.event) {
+      e.preventDefault(); openSheet(e.target.dataset.event);
+    }
+  });
+
+  render();
+})();
+
+</script>
+</body>
+</html>
