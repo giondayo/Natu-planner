@@ -992,9 +992,24 @@ const EVENTS = [
 
   // ---------- plan ----------
   function togglePlan(id) {
-    state.plan.has(id) ? state.plan.delete(id) : state.plan.add(id);
+    const has = state.plan.has(id);
+    has ? state.plan.delete(id) : state.plan.add(id);
     store(STORE_PLAN, [...state.plan]);
-    render();
+
+    // In "My plan" mode, membership changes which items are visible → full render.
+    if (state.planOnly) { render(); return; }
+
+    // Otherwise update just the affected element(s) in place — no rebuild, so the
+    // grid's horizontal/vertical scroll position is preserved.
+    const on = !has;
+    document.querySelectorAll(`[data-star="${CSS.escape(id)}"]`).forEach(btn => {
+      btn.classList.toggle("on", on);
+      btn.setAttribute("aria-pressed", String(on));
+      const box = btn.closest(".card, .g-event, .more-item");
+      if (box) box.classList.toggle("attending", on);
+    });
+    const pc = $("#planCount");
+    if (pc) pc.textContent = state.plan.size ? `(${state.plan.size})` : "";
   }
   function starHTML(ev) {
     const on = state.plan.has(ev.id);
